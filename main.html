@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    .box{
+      width: 200px;
+      height: 200px;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      margin-top: -200px;
+      margin-left: -100px;
+      background-color: aqua;
+      display: flex;
+      align-items: center;
+    }
+    .box div{
+      text-align: center;
+      flex: 1;
+    }
+    .button{
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      margin-top: 10px;
+      margin-left: -30px;
+      width: 30;
+      background-color: aqua;
+    }
+  </style>
+</head>
+
+<body>
+  <div>Đang chưa có background</div>
+  <div class="box" id="box1">
+    <div style="vertical-align: center;">Chèn ảnh và <br>viết cái gì đó trông ngầu ngầu ở đây!</div>
+  </div>
+  <button class="button" id="button1" onclick="nextpage()">
+    <div>Bấm đi</div>
+  </button>
+  <div>
+
+  </div>
+  <button>
+
+  </button>
+  <button>
+
+  </button>
+  <script>
+    function nextpage() {
+      document.getElementById("box1").style.visibility = "hidden";
+      document.getElementById("button1").style.visibility = "hidden";
+    }
+  </script>
+</body>
+
+</html>
