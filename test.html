@@ -66,8 +66,8 @@
       left: 50%;
       top: 50%;
       margin-top: 10px;
-      margin-left: -25px;
-      width: 50px;
+      margin-left: -100px;
+      width: 200px;
       background-color: aqua;
     }
 
@@ -80,7 +80,7 @@
       margin-top: 10px;
       margin-left: -120px;
       background-color: lightcoral;
-      transition: 500ms;
+      transition: 300ms;
       z-index: 1;
     }
 
@@ -104,16 +104,16 @@
     <div style="vertical-align: center;">Chèn ảnh và <br>viết cái gì đó trông ngầu ngầu ở đây!</div>
   </div>
   <button id="button0" onclick="nextpage()">
-    <div>Click</div>
+    <div>Bấm con mẹ m đi, chờ cc!</div>
   </button>
   <button id="button1" onmouseover="move()">
-    NO!
+    Không :))
   </button>
   <button id="button2" onclick="ask()">
-    YES!
+    Có :))
   </button>
   <div id="box1">
-    <p> Mày có bị thần kinh không?</p>
+    <p> Hỏi thật đấy, mày có bị thiểu năng không?</p>
     <input id="input0">
     <button id="button3" onclick="check()">Trả lời</button>
   </div>
@@ -125,7 +125,7 @@
     var count = 0;
     var num = 6;
     var pos = [];
-    var s = "Có anh, em bị thần kinh từ nhỏ!";
+    var s = "Có mày, tao bị thiểu năng từ nhỏ!";
     var box0 = document.getElementById("box0");
     var box1 = document.getElementById("box1");
     var button0 = document.getElementById("button0");
@@ -144,7 +144,7 @@
       pos[num - 1][1] = "50%";
     }
     function nextpage() {
-      box0.getElementsByTagName("div")[0].innerHTML = "Vẫn là phải viết gì đấy";
+      box0.getElementsByTagName("div")[0].innerHTML = "Mày có bị thiểu năng không?";
       button0.style.visibility = "hidden";
       button1.style.visibility = "visible";
       button2.style.visibility = "visible";
