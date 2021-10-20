@@ -1,5 +1,5 @@
 const gravity = 0.1;
-const jumpSpeed = -4;
+const jumpSpeed = -3.8;
 const elastic = 10;
 const obstacleWidth = 50;
 var obstacleSpeed = -1.5;
@@ -7,7 +7,7 @@ var obstacles = [];
 
 function startGame() {
   myGame.start();
-  myCharacter = new component(40, 40,"img/character.jpg", 50, 120, "image");
+  myCharacter = new component(50, 50,"img/character.png", myGame.canvas.width/2 - 150, 120, "image");
   myScore = new component("30px", "Arial", "black", 10, 40, "text", "Score: ");
   highScore = new component("30px", "Arial", "black", 10, 80, "text", "High Score: ");
   myScore.value = highScore.value = 0;
@@ -15,11 +15,16 @@ function startGame() {
 }
 
 function endGame() {
+  var myScoreBoard = new scoreBoard();
+  var restart = new component("48px", "Arial", "black", 25, 200, "text", "Restart");
   var overSound = new sound("sound/gameover.mp3");
   overSound.play();
-  highScore.value += myScore.value;
-  myScore.value = 0;
-  myScoreBoard.open();
+  render(myScore, myScoreBoard);
+  render(highScore, myScoreBoard);
+  render(restart, myScoreBoard);
+  if (highScore.value < myScore.value) {
+    highScore.value = myScore.value;
+  }
 }
 
 var myGame = {
@@ -40,19 +45,47 @@ var myGame = {
   stop: function() {
     clearInterval(this.interval);
     endGame();
+  },
+  restart: function() {
+    this.interval = setInterval(updateGameArea, 10);
+    obstacles.splice(0, obstacles.length);
+    myCharacter.y = 120;
+    myCharacter.speedY = 0;
+    myScore.value = 0;
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
 
-var myScoreBoard = {
-  canvas: document.createElement("canvas"),
-  open: function() {
-    this.canvas.width = 200;
-    this.canvas.height = 200;
-    this.context = this.canvas.getContext("2d");
-    this.canvas.style.backgroundColor = "white";
-    this.frameCount = 0;
-    document.body.appendChild(this.canvas);
+function scoreBoard(){
+  this.canvas = document.createElement("canvas");
+  this.canvas.width = 200;
+  this.canvas.height = 300;
+  this.context = this.canvas.getContext("2d");
+  this.canvas.style.left = (myGame.canvas.width / 2 - this.canvas.width / 2).toString() + "px";
+  this.canvas.style.top = (myGame.canvas.height / 2 - this.canvas.height / 2).toString() + "px";
+  this.canvas.style.backgroundColor = "white";
+  this.canvas.onclick = function () {
+    document.body.removeChild(document.getElementsByTagName("canvas")[1]);
+    myGame.restart();
   }
+  this.idChild = document.body.appendChild(this.canvas);
+}
+
+
+function render(obj, screen) {
+  var cont = screen.context;
+  if (obj.type == "text") {
+    cont.font = obj.width + " " + obj.height;
+    cont.fillStyle = obj.color;
+    cont.fillText(obj.text + (obj.value != null ? obj.value : ""), obj.x, obj.y);
+    return;
+  }
+  if (obj.type == "image") {
+    cont.drawImage(obj.image, obj.x, obj.y, obj.width, obj.height);
+    return;
+  }
+  cont.fillStyle = obj.color;
+  cont.fillRect(obj.x, obj.y, obj.width, obj.height);
 }
 
 function component(width, height, color, x, y, type, text) {
@@ -64,6 +97,7 @@ function component(width, height, color, x, y, type, text) {
   this.width = width;
   this.height = height;
   this.text = text;
+  this.color = color;
   this.x = x;
   this.y = y;
   this.speedX = 0;
@@ -81,19 +115,6 @@ function component(width, height, color, x, y, type, text) {
     if (this.y < 0) {
       this.y = 0;
       this.speedY = 0;
-    }
-    this.render();
-  }
-  this.render = function() {
-    var cont = myGame.context;
-    if (this.type == "text") {
-      cont.font = this.width + " " + this.height;
-      cont.fillStyle = color;
-      cont.fillText(this.text + this.value, this.x, this.y);
-      return;
-    }
-    if (this.type == "image") {
-      cont.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
   }
   this.crash = function(otherObj) {
@@ -114,7 +135,6 @@ function component(width, height, color, x, y, type, text) {
 }
 
 function updateObstacles() {
-  console.log(obstacles.length);
   for (var i = obstacles.length - 1; i >= 0; i--) {
     var inc = 0;
     if (obstacles[i].x + obstacleWidth >= myCharacter.x) {
@@ -132,7 +152,7 @@ function updateObstacles() {
     }
   }
   for (var i = 0; i < obstacles.length; i++) {
-    obstacles[i].render();
+    render(obstacles[i], myGame);
   }
 }
 
@@ -153,16 +173,17 @@ function updateGameArea() {
   myGame.frameCount++;
   if (myGame.frameCount % 200 == 1) {
     var h1 = rand(50, 500);
-    var obstacle = new component(obstacleWidth, h1, "img/bottle.png", 1500, myGame.canvas.height - h1, "image");
+    var obstacle = new component(obstacleWidth, h1, "img/bottle1.png", 1500, myGame.canvas.height - h1, "image");
     obstacles.push(obstacle);
     var h2 = rand(50, myGame.canvas.height - h1 - 200);
-    obstacle = new component(obstacleWidth, h2, "img/bottle.png", 1500, 0, "image");
+    obstacle = new component(obstacleWidth, h2, "img/bottle2.png", 1500, 0, "image");
     obstacles.push(obstacle);
   }
   updateObstacles();
-  myScore.render();
-  highScore.render();
+  render(myScore, myGame);
+  render(highScore, myGame);
   myCharacter.update();
+  render(myCharacter, myGame);
   checkCollision();
 }
 
